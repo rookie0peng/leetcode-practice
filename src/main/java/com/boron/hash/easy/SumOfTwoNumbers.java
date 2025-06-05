@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 
 /**
  * <pre>
- *  @description: 1.两数之和 <a href="https://leetcode.cn/problems/two-sum/description/?envType=problem-list-v2&envId=hash-table"></>
+ *  @description: 1.两数之和 <a href="https://leetcode.cn/problems/two-sum/description/?envType=problem-list-v2&envId=hash-table"><a/>
  *  @author: BruceBoron
  *  @date: 2025/6/5
  * </pre>
