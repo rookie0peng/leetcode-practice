@@ -53,7 +53,7 @@ public class LengthOfLongestSubStringWithNoRepeat {
     public static boolean test(Pair<Param, Result> testParam) {
         Param param = testParam.getKey();
         Result result = testParam.getValue();
-        int calLength = new Solution().lengthOfLongestSubstring(param.getS());
+        int calLength = new LengthOfLongestSubstringSolution().lengthOfLongestSubstring(param.getS());
         int expectLength = result.getLength();
         boolean compareResult = calLength == expectLength;
         System.out.println("compareResult: " + compareResult);
@@ -87,7 +87,7 @@ class Result {
     int length;
 }
 
-class Solution {
+class LengthOfLongestSubstringSolution {
     public int lengthOfLongestSubstring(String s) {
         int maxLength = 0;
         int lastRemoveIndex = 0;
