@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 
 /**
  * <pre>
- *  @description:
+ *  @description: 12. 整数转罗马数字 <a href="https://leetcode.cn/problems/integer-to-roman/description/?envType=problem-list-v2&envId=hash-table">跳转<a/>
  *  @author: BruceBoron
  *  @date: 2025/6/6
  * </pre>
