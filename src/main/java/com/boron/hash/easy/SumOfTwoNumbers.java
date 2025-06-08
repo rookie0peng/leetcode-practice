@@ -9,12 +9,32 @@ import java.util.stream.Stream;
 
 /**
  * <pre>
- *  @description: 1.两数之和 <a href="https://leetcode.cn/problems/two-sum/description/?envType=problem-list-v2&envId=hash-table"><a/>
+ *  @description: 1.两数之和 <a href="https://leetcode.cn/problems/two-sum/description/?envType=problem-list-v2&envId=hash-table">跳转<a/>
  *  @author: BruceBoron
  *  @date: 2025/6/5
  * </pre>
  */
 public class SumOfTwoNumbers {
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    static class Param {
+
+        int[] nums;
+
+        int target;
+
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    static class Result {
+        int[] nums;
+    }
 
     public static Pair<Param, Result> generate0() {
         Param param = Param.builder().nums(new int[] {2,7,11,15}).target(9).build();
@@ -37,7 +57,7 @@ public class SumOfTwoNumbers {
     public static boolean test(Pair<Param, Result> testParam) {
         Param param = testParam.getKey();
         Result result = testParam.getValue();
-        int[] calResult = new Solution().twoSum(param.getNums(), param.getTarget());
+        int[] calResult = SumOfTwoNumbersSolution.twoSum(param.getNums(), param.getTarget());
         int[] calResult2 = Arrays.stream(calResult).sorted().toArray();
         int[] preResult = Arrays.stream(result.getNums()).sorted().toArray();
         boolean compareResult = Arrays.equals(calResult2, preResult);
@@ -52,29 +72,11 @@ public class SumOfTwoNumbers {
     }
 }
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-class Param {
 
-    int[] nums;
 
-    int target;
+class SumOfTwoNumbersSolution {
 
-}
-
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-class Result {
-    int[] nums;
-}
-
-class Solution {
-
-    public int[] twoSum(int[] nums, int target) {
+    public static int[] twoSum(int[] nums, int target) {
         // 用空间换时间
         // 时间复杂度O(n)，空间复杂度O(n)
         Map<Integer, Integer> map = new HashMap<>();
