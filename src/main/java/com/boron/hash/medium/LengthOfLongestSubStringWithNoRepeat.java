@@ -20,6 +20,24 @@ import java.util.Map;
  */
 public class LengthOfLongestSubStringWithNoRepeat {
 
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    static class Param {
+
+        String s;
+
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    static class Result {
+        int length;
+    }
+
     public static Pair<Param, Result> generate0() {
         Param param = Param.builder().s("pwwkew").build();
         Result result = Result.builder().length(3).build();
@@ -69,23 +87,7 @@ public class LengthOfLongestSubStringWithNoRepeat {
     }
 }
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-class Param {
 
-    String s;
-
-}
-
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-class Result {
-    int length;
-}
 
 class LengthOfLongestSubstringSolution {
     public int lengthOfLongestSubstring(String s) {
