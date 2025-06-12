@@ -82,23 +82,20 @@ public class FirstMissingPositive {
 
 class FirstMissingPositiveSolution {
     public static int firstMissingPositive(int[] nums) {
-        for (int i = 0; i < nums.length; i++) {
-            while (nums[i] - 1 != i && nums[i] - 1 < nums.length && nums[i] - 1 >= 0) {
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            while (nums[i] - 1 < n && nums[i] - 1 >= 0 && nums[i] != nums[nums[i] - 1]) {
                 int value1 = nums[i];
                 int value2 = nums[value1 - 1];
-                if (value2 == value1) {
-                    break;
-                } else {
-                    nums[i] = value2;
-                    nums[value1 - 1] = value1;
-                }
+                nums[i] = value2;
+                nums[value1 - 1] = value1;
             }
         }
-        for (int i = 0; i < nums.length; i++) {
+        for (int i = 0; i < n; i++) {
             if (nums[i] - 1 != i) {
                 return i + 1;
             }
         }
-        return nums.length + 1;
+        return n + 1;
     }
 }
