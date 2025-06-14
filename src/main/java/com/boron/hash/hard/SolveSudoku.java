@@ -89,6 +89,32 @@ public class SolveSudoku {
         return Pair.of(param, result);
     }
 
+    public static Pair<Param, Result> generate2() {
+        Param param = Param.builder().board(new char[][]{
+                {'3','2','.','9','.','7','.','1','4'},
+                {'4','.','.','6','.','2','.','.','3'},
+                {'.','.','.','.','3','.','.','.','.'},
+                {'9','1','.','.','.','.','.','6','5'},
+                {'.','.','4','.','.','.','3','.','.'},
+                {'2','5','.','.','.','.','.','9','8'},
+                {'.','.','.','.','6','.','.','.','.'},
+                {'6','.','.','4','.','5','.','.','7'},
+                {'5','9','.','3','.','1','.','4','6'}
+        }).build();
+        Result result = Result.builder().board(new char[][]{
+                {'5','1','9','7','4','8','6','3','2'},
+                {'7','8','3','6','5','2','4','1','9'},
+                {'4','2','6','1','3','9','8','7','5'},
+                {'3','5','7','9','8','6','2','4','1'},
+                {'2','6','4','3','1','7','5','9','8'},
+                {'1','9','8','5','2','4','3','6','7'},
+                {'9','7','5','8','6','3','1','2','4'},
+                {'8','3','2','4','9','1','7','5','6'},
+                {'6','4','1','2','7','5','9','8','3'}
+        }).build();
+        return Pair.of(param, result);
+    }
+
     public static boolean test(Pair<Param, Result> testParam) {
         Param param = testParam.getKey();
         Result result = testParam.getValue();
@@ -102,6 +128,7 @@ public class SolveSudoku {
                 break;
             }
         }
+        System.out.println(Arrays.deepToString(param.getBoard()));
         boolean compareResult = compare == 0;
         System.out.println("compareResult: " + compareResult);
         return compareResult;
@@ -109,7 +136,8 @@ public class SolveSudoku {
 
     public static void main(String[] args) {
 //        test(generate0());
-        test(generate1());
+//        test(generate1());
+        test(generate2());
 //        int intValue = 45 - 40;
 //        char a = (char) ('0' + intValue);
 //        System.out.println(a);
