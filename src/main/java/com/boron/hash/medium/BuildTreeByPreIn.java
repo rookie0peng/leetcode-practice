@@ -137,84 +137,86 @@ class BuildTreeByPreInSolution {
 
     static Map<Integer, Integer> DICT = new HashMap<>();
 
-    public static TreeNode buildTree(int[] preorder, int[] inorder) {
+    public static TreeNode buildTree1(int[] preorder, int[] inorder) {
         // 中序遍历数组中元素对应的下标
         int len = preorder.length;
-//        PREORDER = preorder;
+        // 先将中序遍历的下标和元素放入map，方便查找元素对应的下标(val -> index)
         for (int i = 0; i < len; i++) {
             DICT.put(inorder[i], i);
         }
+        // 递归生成二叉树
         return recursion(preorder, inorder, 0, len - 1, 0, len - 1);
     }
 
+    /**
+     * 递归生成二叉树
+     * @param preorder 先序遍历数组
+     * @param inorder 中序遍历数组
+     * @param pLeft 先序数组左边界
+     * @param pRight 先序数组右边界
+     * @param iLeft 中序数组左边界
+     * @param iRight 中序数组右边界
+     * @return 二叉树
+     */
     private static TreeNode recursion(int[] preorder, int[] inorder, int pLeft, int pRight, int iLeft, int iRight) {
+        // 如果左边界大于右边界，返回null
         if (pLeft > pRight) {
             return null;
         }
+        // 先序遍历左边界即是根节点
         int pRoot = pLeft;
+        // 获取根节点的值
         int rootVal = preorder[pRoot];
+        // 获取根节点对应的中序遍历数组下标
         int iRoot = DICT.get(rootVal);
+        // 构建根节点
         TreeNode treeNode = new TreeNode(rootVal);
+        // 计算左子树的长度
         int leftTreeLen = iRoot - iLeft;
+        // 递归构建左子树
+        // 先序遍历数组没有明确的左右子树分割线，只能通过中序遍历数组计算得到的子树长度来计算。
+        // 中序遍历数组的root坐标即是左右子树的分割线。
         treeNode.left = recursion(preorder, inorder, pLeft + 1, pLeft + leftTreeLen, iLeft, iRoot - 1);
+        // 递归构建右子树
         treeNode.right = recursion(preorder, inorder, pLeft + leftTreeLen + 1, pRight, iRoot + 1, iRight);
         return treeNode;
     }
 
-    public static TreeNode buildTree1(int[] preorder, int[] inorder) {
-        // 先序遍历：根左右
-        // 中序遍历：左根右
-        int len = preorder.length;
-        // 中序遍历数组中元素对应的下标
-        Map<Integer, Integer> inorderMap = new HashMap<>();
-        for (int i = 0; i < len; i++) {
-            inorderMap.put(inorder[i], i);
-        }
-
+    /**
+     * 迭代方式生成二叉树，很抽象
+     * @param preorder 先序遍历数组
+     * @param inorder 中序遍历数组
+     * @return 节点
+     */
+    public static TreeNode buildTree(int[] preorder, int[] inorder) {
+//        if (preorder == null || preorder.length == 0) {
+//            return null;
+//        }
+        // 构建根节点
         TreeNode root = new TreeNode(preorder[0]);
-        // 根结点也视为右节点
-        Stack<TreeNode> parents = new Stack<>();
-        parents.push(root);
-        one: for (int i = 1; i < len; i++) {
-            Integer nowIndex = inorderMap.get(preorder[i]);
-            TreeNode nowNode = new TreeNode(preorder[i]);
-
-            two: while (!parents.isEmpty()) {
-                // 取出当前父节点
-                TreeNode nowParent = parents.peek();
-                // 判断该节点是否可以挂载到左子节点
-                if (nowIndex < inorderMap.get(parents.peek().val)) {
-                    nowParent.left = nowNode;
-                    parents.push(nowNode);
-                    break;
+        // 初始化暂存根节点的堆栈
+        Deque<TreeNode> stack = new LinkedList<>();
+        stack.push(root);
+        // 中序遍历数组的下标
+        int inorderIndex = 0;
+        for (int i = 1; i < preorder.length; i++) {
+            int preorderVal = preorder[i];
+            TreeNode node = stack.peek();
+            // 如果当前节点的值不等于中序遍历数组的元素，则将该元素作为左节点，并推入堆栈
+            if (node.val != inorder[inorderIndex]) {
+                node.left = new TreeNode(preorderVal);
+                stack.push(node.left);
+            } else {
+                // 如果相等
+                // 堆栈不为空，且栈顶的值与中序遍历的元素相等
+                while (!stack.isEmpty() && stack.peek().val == inorder[inorderIndex]) {
+                    // 弹出栈顶元素，中序遍历下标++
+                    node = stack.pop();
+                    inorderIndex++;
                 }
-                // 查找第一个作为左子树的父节点
-                TreeNode ppNode;
-                parents.pop();
-                TreeNode parentNode = parents.isEmpty() ? null : parents.peek();
-                while (parentNode != null) {
-                    ppNode = parents.size() > 0 ? parents.peek() : null;
-                    // 如果当前父节点是祖先节点的右子节点，继续向上查找
-                    if (ppNode != null && ppNode.right == parentNode) {
-                        parentNode = parents.pop();
-                    } else {
-                        // 父父节点等于null也认为是左子节点，如果是左子节点，则暂停
-                        if (inorderMap.get(parentNode.val) > inorderMap.get(nowNode.val)) {
-                            nowParent.right = nowNode;
-                            parents.push(nowParent);
-                            parents.push(nowNode);
-                            break two;
-                        } else {
-                            nowParent = parentNode;
-                            parentNode = parents.size() > 0 ? parents.pop() : null;
-                        }
-                    }
-                }
-                // 如果前面没有找到 作为左子树的父节点
-                // 直接将当前节点挂载到当前父节点的右节点
-                nowParent.right = nowNode;
-                parents.push(nowNode);
-                break ;
+                // 将当前元素作为作为最后一个节点的右子节点
+                node.right = new TreeNode(preorderVal);
+                stack.push(node.right);
             }
         }
         return root;
