@@ -83,27 +83,48 @@ public class WordBreak2 {
 }
 
 class WordBreak2Solution {
+
     public static List<String> wordBreak(String s, List<String> wordDict) {
+        // 将wordDict转为HashSet，方便查找
         Set<String> dict = new HashSet<>(wordDict);
+        // 存放前置单词的集合
         List<String> preWords = new ArrayList<>(s.length());
+        // 存放结果的集合
         List<String> results = new ArrayList<>(s.length());
+        // 递归生成结果
         recursion(s, 0, dict, preWords, results);
         return results;
     }
 
+    /**
+     * 递归生成结果
+     * @param s 初始字符串
+     * @param left 左端点
+     * @param dict 候选单词字典
+     * @param preWords 前置单词集合
+     * @param results 结果集
+     */
     private static void recursion(String s, int left, Set<String> dict, List<String> preWords, List<String> results) {
+        // 从左端点开始遍历
         for (int i = left; i <= s.length(); i++) {
+            // 从左端点到i的临时字符串
             String tmpStr = s.substring(left, i);
-
+            // 如果字典包含临时字符串
             if (dict.contains(tmpStr)) {
+                // 将该临时字符串放入前置单词集合
                 preWords.add(tmpStr);
+                // 判断i是不是到达终点
                 if (i == s.length()) {
+                    // 是，将前置字符串集合转换为新字符串，并放入结果集
                     String tmpResult = String.join(" ", preWords);
                     results.add(tmpResult);
+                    // 从前置字符串中删除该字符串，中断循环
                     preWords.remove(preWords.size() - 1);
                     break;
                 }
+                // 未到终点，继续递归
                 recursion(s, i, dict, preWords, results);
+                // 从前置字符串中删除该字符串，进入下一次循环
                 preWords.remove(preWords.size() - 1);
             }
         }
