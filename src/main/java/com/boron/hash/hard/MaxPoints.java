@@ -74,24 +74,32 @@ public class MaxPoints {
  */
 class MaxPointsSolution2 {
     public static int maxPoints(int[][] points) {
+        // 如果点的数量小于等于2，则直接返回数量
         if (points.length <= 2) {
             return points.length;
         }
+        // 最大数量
         int maxCount = 0;
+        // 第一层遍历，对应第一个点
         for (int i = 0; i < points.length; i++) {
             int x1 = points[i][0];
             int y1 = points[i][1];
+            // 第二层遍历，对应第二个点
             for (int j = i + 1; j < points.length; j++) {
                 int x2 = points[j][0];
                 int y2 = points[j][1];
                 int count = 2;
+                // 第三层遍历，判断第3个点是否在前两个点对应的直线上
                 for (int k = j + 1; k < points.length; k++) {
                     int x3 = points[k][0];
                     int y3 = points[k][1];
+                    // 两点确定直线的方式：点斜式、斜截式、截距式、两点式
+                    // 这里是两点式的变种
                     if ((x3 - x1) * (y2 - y1) == (y3 - y1) * (x2 - x1)) {
                         count++;
                     }
                 }
+                // 更新最大数量
                 maxCount = Math.max(count, maxCount);
             }
         }
