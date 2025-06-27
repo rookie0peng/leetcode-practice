@@ -81,7 +81,7 @@ public class IsAnagram {
     }
 }
 
-class Solution {
+class IsAnagramSolution {
 
     public boolean isAnagram(String s, String t) {
         // 如果长度不相等，则说明该两个字符串肯定不是字母异位词
