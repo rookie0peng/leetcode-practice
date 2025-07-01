@@ -82,6 +82,7 @@ public class MatrixMultiply {
 class MatrixMultiplySolution {
 
     public static List<List<Pair<Integer, Integer>>> compressMatrix(int[][] matrix) {
+        // 压缩矩阵，排除非零元素
         List<List<Pair<Integer, Integer>>> cm = new ArrayList<>();
         for (int row = 0; row < matrix.length; row++) {
             List<Pair<Integer, Integer>> rowElements = new ArrayList<>();
@@ -97,28 +98,36 @@ class MatrixMultiplySolution {
 
     /**
      * 压缩+迭代
+     * 核心思想：先将零值排除，再进行计算
      */
     public static int[][] multiply(int[][] mat1, int[][] mat2) {
         int m1 = mat1.length;
-        int n1 = mat1[0].length;
-        int m2 = mat2.length;
         int n2 = mat2[0].length;
         int[][] results = new int[m1][n2];
 
+        // 压缩两个矩阵
         List<List<Pair<Integer, Integer>>> compressMat1 = compressMatrix(mat1);
         List<List<Pair<Integer, Integer>>> compressMat2 = compressMatrix(mat2);
 
+        // 从第一个矩阵的行开始遍历
         for (int row = 0; row < m1; row++) {
+            // 获取行的所有非零元素
             List<Pair<Integer, Integer>> rowPairs = compressMat1.get(row);
+            // 遍历这些元素
             for (Pair<Integer, Integer> rowPair : rowPairs) {
+                // 获取对应的元素以及列
                 int element1 = rowPair.getLeft();
                 int col1 = rowPair.getRight();
                 // mat1的列，对应mat2的行，通过该列获取mat2的元素
-                List<Pair<Integer, Integer>> colPairs = compressMat2.get(col1);
-                for (Pair<Integer, Integer> colPair : colPairs) {
-                    int element2 = colPair.getLeft();
-                    int col2 = colPair.getRight();
+                List<Pair<Integer, Integer>> rowPairs2 = compressMat2.get(col1);
+                // 遍历第二个矩阵的行元素
+                for (Pair<Integer, Integer> rowPair2 : rowPairs2) {
+                    // 获取对应的元素以及列
+                    int element2 = rowPair2.getLeft();
+                    int col2 = rowPair2.getRight();
+                    // 计算结果
                     int tmpResult = element1 * element2;
+                    // 将结果进行累加
                     results[row][col2] += tmpResult;
                 }
             }
