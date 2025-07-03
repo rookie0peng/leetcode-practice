@@ -106,7 +106,7 @@ class PalindromePairsSolution {
     /**
      * 哈希
      */
-    public List<List<Integer>> palindromePairs1(String[] words) {
+    public List<List<Integer>> palindromePairs(String[] words) {
         // 存储反转单词的map
         Map<String, Integer> revMap = new HashMap<>();
         // 将反转单词和下标放入map
