@@ -121,6 +121,7 @@ public class IsNumber {
     }
 
     public static void main(String[] args) {
+
 //        test(generate0());
 //        test(generate1());
 //        test(generate2());
