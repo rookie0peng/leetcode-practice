@@ -64,6 +64,33 @@ public class FindWords {
         return Pair.of(param, result);
     }
 
+    public static Pair<Param, Result> generate3() {
+        Param param = Param.builder()
+                .board(new char[][]{{'a'}})
+                .words(new String[]{"ab"})
+                .build();
+        Result result = Result.builder().result(List.of()).build();
+        return Pair.of(param, result);
+    }
+
+    public static Pair<Param, Result> generate4() {
+        Param param = Param.builder()
+                .board(new char[][]{{'a', 'a'}})
+                .words(new String[]{"aaa"})
+                .build();
+        Result result = Result.builder().result(List.of()).build();
+        return Pair.of(param, result);
+    }
+
+    public static Pair<Param, Result> generate5() {
+        Param param = Param.builder()
+                .board(new char[][]{{'a'}})
+                .words(new String[]{"a"})
+                .build();
+        Result result = Result.builder().result(List.of("a")).build();
+        return Pair.of(param, result);
+    }
+
     public static boolean test(Pair<Param, Result> testParam) {
         Param param = testParam.getKey();
         Result result = testParam.getValue();
@@ -80,18 +107,114 @@ public class FindWords {
 
     public static void main(String[] args) {
 
-//        test(generate0());
-//        test(generate1());
+        test(generate0());
+        test(generate1());
         test(generate2());
-//        test(generate3());
-//        test(generate4());
-//        test(generate5());
+        test(generate3());
+        test(generate4());
+        test(generate5());
 //        test(generate6());
     }
 
 }
 
 class FindWordsSolution {
+    static int[][] DIRECTIONS = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+    static char[][] BOARD;
+    static int M;
+    static int N;
+
+    public static List<String> findWords(char[][] board, String[] words) {
+        // 初始化快速查找树
+        Trie trie = new Trie();
+        // 将单词全部存入树
+        for (String word : words) {
+            trie.insert(word);
+        }
+        int m = board.length, n = board[0].length;
+        // 将部分变量存入本地，方便其他静态方法使用
+        BOARD = board;
+        M = m;
+        N = n;
+        Set<String> results = new HashSet<>();
+        // 遍历网格
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                // 以任意一个字符为起点，进行与之匹配的树
+                search(trie, i, j, results);
+            }
+        }
+        return new ArrayList<>(results);
+    }
+
+    public static void search(Trie parentTrie, int i, int j, Set<String> results) {
+        // 如果下标越界，或者字符已走过，直接返回
+        if (i < 0 || i >= M || j < 0 || j >= N || BOARD[i][j] == '#') {
+            return;
+        }
+        // 获取当前字符
+        char c = BOARD[i][j];
+        // 获取字符对应的子树
+        Trie child = parentTrie.children[c - 'a'];
+        // 如果子树为null，直接返回
+        if (child == null) {
+            return;
+        }
+        // 从根至当前子树，是否为单词
+        if (child.isWord) {
+            child.isWord = false;
+            results.add(child.word);
+        }
+        // 如果当前子树的子分支数量小于等于0，则进行剪枝
+        if (child.branchNo <= 0) {
+            // 剪枝
+            parentTrie.children[c - 'a'] = null;
+            parentTrie.branchNo--;
+        }
+        // 标记当前下标为已走过
+        BOARD[i][j] = '#';
+        for (int[] direction : DIRECTIONS) {
+            int i1 = direction[0] + i;
+            int j1 = direction[1] + j;
+            search(child, i1, j1, results);
+        }
+        // 取消标记
+        BOARD[i][j] = c;
+    }
+
+
+    static class Trie {
+        boolean isWord = false;
+        String word = "";
+        int branchNo = 0;
+        Trie[] children = new Trie[26];
+        public Trie() {
+
+        }
+
+//        public Trie(char c) {
+//
+//        }
+
+        public void insert(String word) {
+            Trie cur = this;
+            for (char c : word.toCharArray()) {
+                if (cur.children[c - 'a'] == null) {
+                    cur.children[c - 'a'] = new Trie();
+                    cur.branchNo++;
+                }
+                cur = cur.children[c - 'a'];
+            }
+            cur.isWord = true;
+            cur.word = word;
+        }
+    }
+}
+
+/**
+ * 深度优先搜索，超时
+ */
+class FindWordsSolution1 {
 
     static class Node {
 
@@ -171,7 +294,7 @@ class FindWordsSolution {
                 start = word.length() - 1;
                 step = -1;
             }
-            List<int[]> indices = charIndices.get(word.charAt(start));
+            List<int[]> indices = charIndices.getOrDefault(word.charAt(start), List.of());
             for (int[] idx : indices) {
                 Node node = NODES[idx[0]][idx[1]];
                 node.trace = true;
@@ -206,7 +329,7 @@ class FindWordsSolution {
             char c2 = word.charAt(idx2);
             List<int[]> indices1 = charIndices.getOrDefault(c1, List.of());
             List<int[]> indices2 = charIndices.getOrDefault(c2, List.of());
-            if (indices1.size() == 0 || indices2.size() == 0) {
+            if (indices1.isEmpty() || indices2.isEmpty()) {
                 return 0;
             }
             sumPrefix += indices1.size();
@@ -219,12 +342,15 @@ class FindWordsSolution {
         if (idx < 0 || idx >= word.length()) {
             return true;
         }
-        if (node == null || !node.trace) {
+        if (node == null) {
             return false;
         }
         char c = word.charAt(idx);
         List<Node> nodes = node.next.getOrDefault(c, List.of());
         for (Node nextNode : nodes) {
+            if (nextNode.trace) {
+                continue;
+            }
             nextNode.trace = true;
             boolean dfsFind = dfsFind(word, idx + step, step, nextNode);
             if (dfsFind) {
